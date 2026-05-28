@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#065F46">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="DompetKu - Aplikasi Pencatatan Keuangan Keluarga Premium">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>DompetKu — Keuangan Keluarga</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- html2canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- SheetJS -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- App Stylesheets -->
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <div id="app">
+
+    <!-- ============================================ -->
+    <!-- PAGE 1: Dashboard (DEFAULT VISIBLE)          -->
+    <!-- ============================================ -->
+    <section id="page-dashboard" class="page active">
+      <!-- Hero: Total Balance -->
+      <div class="dashboard-hero">
+        <p class="hero-label">Total Saldo Gabungan</p>
+        <h1 class="hero-balance" id="total-balance">Rp 0</h1>
+        
+        <!-- Premium Wallets Grid -->
+        <div class="hero-wallets-grid">
+          <!-- Prakas Wallet Card -->
+          <div class="wallet-person-card prakas-card">
+            <div class="person-badge">
+              <span class="avatar-glow prakas-glow">👨🏻</span>
+              <span class="person-name">Prakas</span>
+            </div>
+            <div class="wallet-balances">
+              <div class="wb-item">
+                <span class="wb-icon">💵</span>
+                <div class="wb-text">
+                  <span class="wb-label">Cash</span>
+                  <span class="wb-val" id="prakas-cash">Rp 0</span>
+                </div>
+              </div>
+              <div class="wb-item">
+                <span class="wb-icon">🏦</span>
+                <div class="wb-text">
+                  <span class="wb-label">Rekening</span>
+                  <span class="wb-val" id="prakas-rekening">Rp 0</span>
+                </div>
+              </div>
+              <div class="wb-item">
+                <span class="wb-icon text-success">↑</span>
+                <div class="wb-text">
+                  <span class="wb-label">Pemasukan</span>
+                  <span class="wb-val text-success" id="prakas-month-income">Rp 0</span>
+                </div>
+              </div>
+              <div class="wb-item">
+                <span class="wb-icon text-danger">↓</span>
+                <div class="wb-text">
+                  <span class="wb-label">Pengeluaran</span>
+                  <span class="wb-val text-danger" id="prakas-month-expense">Rp 0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mishel Wallet Card -->
+          <div class="wallet-person-card mishel-card">
+            <div class="person-badge">
+              <span class="avatar-glow mishel-glow">👩🏻</span>
+              <span class="person-name">Mishel</span>
+            </div>
+            <div class="wallet-balances">
+              <div class="wb-item">
+                <span class="wb-icon">💵</span>
+                <div class="wb-text">
+                  <span class="wb-label">Cash</span>
+                  <span class="wb-val" id="mishel-cash">Rp 0</span>
+                </div>
+              </div>
+              <div class="wb-item">
+                <span class="wb-icon">🏦</span>
+                <div class="wb-text">
+                  <span class="wb-label">Rekening</span>
+                  <span class="wb-val" id="mishel-rekening">Rp 0</span>
+                </div>
+              </div>
+              <div class="wb-item">
+                <span class="wb-icon text-success">↑</span>
+                <div class="wb-text">
+                  <span class="wb-label">Pemasukan</span>
+                  <span class="wb-val text-success" id="mishel-month-income">Rp 0</span>
+                </div>
+              </div>
+              <div class="wb-item">
+                <span class="wb-icon text-danger">↓</span>
+                <div class="wb-text">
+                  <span class="wb-label">Pengeluaran</span>
+                  <span class="wb-val text-danger" id="mishel-month-expense">Rp 0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Income & Expense -->
+        <div class="hero-total-stats">
+          <div class="hts-item income">
+            <div class="hts-icon">↑</div>
+            <div>
+              <div class="hts-label">Total Pemasukan Gabungan</div>
+              <div class="hts-val" id="month-income">Rp 0</div>
+            </div>
+          </div>
+          <div class="hts-item expense">
+            <div class="hts-icon">↓</div>
+            <div>
+              <div class="hts-label">Total Pengeluaran Gabungan</div>
+              <div class="hts-val" id="month-expense">Rp 0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Charts -->
+      <h2 class="section-title">Diagram Kategori (Analitik)</h2>
+      <div class="charts-carousel">
+        <div class="card glass-card carousel-item">
+          <div class="card-header"><h2>Pengeluaran Prakas</h2></div>
+          <div class="chart-container">
+            <canvas id="prakas-expense-chart"></canvas>
+            <div class="chart-center-label" id="chart-center-prakas-expense"></div>
+          </div>
+          <div id="chart-legend-prakas-expense" class="chart-legend"></div>
+        </div>
+
+        <div class="card glass-card carousel-item">
+          <div class="card-header"><h2>Pemasukan Prakas</h2></div>
+          <div class="chart-container">
+            <canvas id="prakas-income-chart"></canvas>
+            <div class="chart-center-label" id="chart-center-prakas-income"></div>
+          </div>
+          <div id="chart-legend-prakas-income" class="chart-legend"></div>
+        </div>
+
+        <div class="card glass-card carousel-item">
+          <div class="card-header"><h2>Pengeluaran Mishel</h2></div>
+          <div class="chart-container">
+            <canvas id="mishel-expense-chart"></canvas>
+            <div class="chart-center-label" id="chart-center-mishel-expense"></div>
+          </div>
+          <div id="chart-legend-mishel-expense" class="chart-legend"></div>
+        </div>
+
+        <div class="card glass-card carousel-item">
+          <div class="card-header"><h2>Pemasukan Mishel</h2></div>
+          <div class="chart-container">
+            <canvas id="mishel-income-chart"></canvas>
+            <div class="chart-center-label" id="chart-center-mishel-income"></div>
+          </div>
+          <div id="chart-legend-mishel-income" class="chart-legend"></div>
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="card glass-card recent-tx-card">
+        <div class="card-header">
+          <h2>Transaksi Terbaru</h2>
+          <button class="btn-text" onclick="App.navigate('transactions')">Lihat Semua</button>
+        </div>
+        <div id="recent-transactions" class="transaction-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PAGE 2: Budget                               -->
+    <!-- ============================================ -->
+    <section id="page-budget" class="page">
+      <div class="page-header">
+        <h1>Budget Tracker</h1>
+        <div class="month-selector">
+          <button class="btn-icon" id="budget-prev-month"><i data-lucide="chevron-left"></i></button>
+          <span id="budget-month-label">Mei 2026</span>
+          <button class="btn-icon" id="budget-next-month"><i data-lucide="chevron-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Budget Summary Card -->
+      <div class="card glass-card budget-summary-card">
+        <div class="budget-summary">
+          <div>
+            <p class="stat-label">Total Budget</p>
+            <p class="stat-value" id="total-budget">Rp 0</p>
+          </div>
+          <div>
+            <p class="stat-label">Terpakai</p>
+            <p class="stat-value" id="used-budget">Rp 0</p>
+          </div>
+          <div>
+            <p class="stat-label">Sisa</p>
+            <p class="stat-value" id="remaining-budget">Rp 0</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Budget List -->
+      <div id="budget-list" class="budget-list">
+        <!-- Budget items populated by JS -->
+      </div>
+
+      <button class="btn-primary btn-add-budget" id="btn-add-budget">
+        <i data-lucide="plus"></i> Atur Budget Kategori
+      </button>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PAGE 3: Report                               -->
+    <!-- ============================================ -->
+    <section id="page-report" class="page">
+      <div class="page-header">
+        <h1>Laporan</h1>
+        <div class="month-selector">
+          <button class="btn-icon" id="report-prev-month"><i data-lucide="chevron-left"></i></button>
+          <span id="report-month-label">Mei 2026</span>
+          <button class="btn-icon" id="report-next-month"><i data-lucide="chevron-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Cash Flow Summary -->
+      <div class="card glass-card">
+        <h2>Arus Kas</h2>
+        <div class="cashflow-grid" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 15px;">
+          <!-- Gabungan -->
+          <div class="cashflow-box" style="background:var(--color-bg); padding:15px; border-radius:12px; text-align:center;">
+            <h3 style="font-size:12px; color:var(--color-text-muted); margin-bottom:10px;">Gabungan</h3>
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+              <span style="font-size:11px;">Pemasukan</span>
+              <span style="color:var(--color-success); font-weight:600; font-size:11px;" id="report-income-total">Rp 0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:10px;">
+              <span style="font-size:11px;">Pengeluaran</span>
+              <span style="color:var(--color-danger); font-weight:600; font-size:11px;" id="report-expense-total">Rp 0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="font-size:11px; font-weight:600;">Sisa</span>
+              <span style="font-weight:700; font-size:12px;" id="report-net-total">Rp 0</span>
+            </div>
+          </div>
+
+          <!-- Prakas -->
+          <div class="cashflow-box" style="background:var(--color-bg); padding:15px; border-radius:12px; text-align:center;">
+            <h3 style="font-size:12px; color:var(--color-text-muted); margin-bottom:10px;">Prakas</h3>
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+              <span style="font-size:11px;">Pemasukan</span>
+              <span style="color:var(--color-success); font-weight:600; font-size:11px;" id="report-income-prakas">Rp 0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:10px;">
+              <span style="font-size:11px;">Pengeluaran</span>
+              <span style="color:var(--color-danger); font-weight:600; font-size:11px;" id="report-expense-prakas">Rp 0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="font-size:11px; font-weight:600;">Sisa</span>
+              <span style="font-weight:700; font-size:12px;" id="report-net-prakas">Rp 0</span>
+            </div>
+          </div>
+
+          <!-- Mishel -->
+          <div class="cashflow-box" style="background:var(--color-bg); padding:15px; border-radius:12px; text-align:center;">
+            <h3 style="font-size:12px; color:var(--color-text-muted); margin-bottom:10px;">Mishel</h3>
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+              <span style="font-size:11px;">Pemasukan</span>
+              <span style="color:var(--color-success); font-weight:600; font-size:11px;" id="report-income-mishel">Rp 0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:10px;">
+              <span style="font-size:11px;">Pengeluaran</span>
+              <span style="color:var(--color-danger); font-weight:600; font-size:11px;" id="report-expense-mishel">Rp 0</span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span style="font-size:11px; font-weight:600;">Sisa</span>
+              <span style="font-weight:700; font-size:12px;" id="report-net-mishel">Rp 0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bar Chart: Income vs Expense -->
+      <div class="card glass-card">
+        <h2>Perbandingan Bulanan</h2>
+        <div class="chart-container">
+          <canvas id="report-bar-chart"></canvas>
+        </div>
+      </div>
+
+      <!-- Category Breakdown -->
+      <div class="card glass-card">
+        <h2>Rincian Per Kategori</h2>
+        <div id="report-category-breakdown" class="category-breakdown">
+        </div>
+      </div>
+
+      <!-- Export Buttons -->
+      <div class="export-buttons">
+
+        <button class="btn-export btn-export-excel" id="btn-export-excel">
+          <i data-lucide="table"></i> Export Excel
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PAGE 4: More / Settings                      -->
+    <!-- ============================================ -->
+    <section id="page-more" class="page">
+      <div class="page-header">
+        <h1>Lainnya</h1>
+      </div>
+
+      <!-- Wallets Management -->
+      <div class="card glass-card">
+        <div class="card-header">
+          <h2>Dompet Saya</h2>
+          <button class="btn-icon" id="btn-add-wallet"><i data-lucide="plus-circle"></i></button>
+        </div>
+        <div id="wallet-list" class="wallet-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Categories Management -->
+      <div class="card glass-card">
+        <div class="card-header">
+          <h2>Kategori</h2>
+          <button class="btn-icon" id="btn-add-category"><i data-lucide="plus-circle"></i></button>
+        </div>
+        <div id="category-list" class="category-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- All Transactions -->
+      <div class="card glass-card">
+        <div class="card-header">
+          <h2>Semua Transaksi</h2>
+        </div>
+        <div class="filter-bar">
+          <select id="filter-wallet" class="filter-select"><option value="">Semua Dompet</option></select>
+          <select id="filter-category" class="filter-select"><option value="">Semua Kategori</option></select>
+          <input type="month" id="filter-month" class="filter-select" />
+        </div>
+        <div id="all-transactions" class="transaction-list">
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /#app -->
+
+  <!-- ============================================ -->
+  <!-- Bottom Navigation Bar                        -->
+  <!-- ============================================ -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="nav-item active" data-page="dashboard">
+      <i data-lucide="home"></i>
+      <span>Home</span>
+    </button>
+    <button class="nav-item" data-page="budget">
+      <i data-lucide="pie-chart"></i>
+      <span>Budget</span>
+    </button>
+    <button class="fab" id="fab-add" aria-label="Tambah Transaksi">
+      <i data-lucide="plus"></i>
+    </button>
+    <button class="nav-item" data-page="report">
+      <i data-lucide="bar-chart-3"></i>
+      <span>Laporan</span>
+    </button>
+    <button class="nav-item" data-page="more">
+      <i data-lucide="menu"></i>
+      <span>Lainnya</span>
+    </button>
+  </nav>
+
+  <!-- ============================================ -->
+  <!-- MODALS                                        -->
+  <!-- ============================================ -->
+
+  <!-- Transaction Modal (Bottom Sheet) -->
+  <div class="modal-overlay" id="modal-transaction">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <h2 class="modal-title">Tambah Transaksi</h2>
+
+      <!-- Type Toggle -->
+      <div class="type-toggle">
+        <button class="toggle-btn active" data-type="expense" id="toggle-expense">Pengeluaran</button>
+        <button class="toggle-btn" data-type="income" id="toggle-income">Pemasukan</button>
+        <button class="toggle-btn" data-type="transfer" id="toggle-transfer">Transfer</button>
+      </div>
+
+      <!-- Amount Input -->
+      <div class="amount-input-wrapper">
+        <span class="currency-prefix">Rp</span>
+        <input type="text" id="input-amount" class="amount-input" placeholder="0" inputmode="numeric" autocomplete="off">
+      </div>
+
+      <!-- Wallet Selection -->
+      <div class="form-group" id="group-wallet-source">
+        <label id="label-wallet-source">Pilih Dompet</label>
+        <div id="wallet-selector" class="pill-selector">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Destination Wallet Selection (Hidden by default) -->
+      <div class="form-group" id="group-wallet-dest" style="display:none">
+        <label>Ke Dompet Tujuan</label>
+        <div id="wallet-dest-selector" class="pill-selector">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Category Selection -->
+      <div class="form-group" id="group-category">
+        <label>Pilih Kategori</label>
+        <div id="category-selector" class="category-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Optional Fields -->
+      <div class="form-group">
+        <label>Tanggal</label>
+        <input type="date" id="input-date" class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label>Catatan (opsional)</label>
+        <input type="text" id="input-note" class="form-input" placeholder="Tambah catatan...">
+      </div>
+
+      <div class="form-group">
+        <label>Foto Struk (opsional)</label>
+        <div class="receipt-upload">
+          <input type="file" id="input-receipt" accept="image/*" capture="environment" hidden>
+          <button class="btn-upload" id="btn-upload-receipt">
+            <i data-lucide="camera"></i> Ambil Foto
+          </button>
+          <div id="receipt-preview" class="receipt-preview" style="display:none">
+            <img id="receipt-img" alt="Struk">
+            <button class="btn-remove-receipt" id="btn-remove-receipt"><i data-lucide="x"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions" style="display: flex; gap: 8px; margin-top: 16px;">
+        <button class="btn-primary btn-save-transaction" id="btn-save-transaction" style="flex: 2;">
+          <i data-lucide="check"></i> Simpan Transaksi
+        </button>
+        <button class="btn-danger" id="btn-delete-transaction" style="display:none; flex: 1; justify-content: center; background-color: #EF4444; color: white; border: none; border-radius: 8px; font-weight: 600;">
+          <i data-lucide="trash-2"></i> Hapus
+        </button>
+      </div>
+
+      <button class="btn-text btn-cancel" id="btn-cancel-transaction">Batal</button>
+    </div>
+  </div>
+
+  <!-- Wallet Modal -->
+  <div class="modal-overlay" id="modal-wallet">
+    <div class="modal-sheet modal-small">
+      <div class="modal-handle"></div>
+      <h2 class="modal-title" id="wallet-modal-title">Tambah Dompet</h2>
+      <input type="hidden" id="edit-wallet-id">
+      <div class="form-group">
+        <label>Nama Dompet</label>
+        <input type="text" id="input-wallet-name" class="form-input" placeholder="Contoh: Rekening BCA">
+      </div>
+      <div class="form-group">
+        <label>Saldo Awal</label>
+        <input type="text" id="input-wallet-balance" class="form-input" placeholder="0" inputmode="numeric">
+      </div>
+      <div class="form-group">
+        <label>Ikon</label>
+        <div class="emoji-picker" id="wallet-emoji-picker">
+          <button class="emoji-btn active" data-emoji="🏦">🏦</button>
+          <button class="emoji-btn" data-emoji="💳">💳</button>
+          <button class="emoji-btn" data-emoji="💵">💵</button>
+          <button class="emoji-btn" data-emoji="📱">📱</button>
+          <button class="emoji-btn" data-emoji="🏧">🏧</button>
+          <button class="emoji-btn" data-emoji="💰">💰</button>
+          <button class="emoji-btn" data-emoji="🪙">🪙</button>
+          <button class="emoji-btn" data-emoji="👛">👛</button>
+        </div>
+      </div>
+      <button class="btn-primary" id="btn-save-wallet">Simpan</button>
+      <button class="btn-text btn-cancel" id="btn-cancel-wallet">Batal</button>
+    </div>
+  </div>
+
+  <!-- Budget Modal -->
+  <div class="modal-overlay" id="modal-budget">
+    <div class="modal-sheet modal-small">
+      <div class="modal-handle"></div>
+      <h2 class="modal-title">Atur Budget</h2>
+      <div class="form-group">
+        <label>Kategori</label>
+        <select id="input-budget-category" class="form-input"></select>
+      </div>
+      <div class="form-group">
+        <label>Nominal Batas</label>
+        <input type="text" id="input-budget-limit" class="form-input" placeholder="0" inputmode="numeric">
+      </div>
+      <button class="btn-primary" id="btn-save-budget">Simpan</button>
+      <button class="btn-text btn-cancel" id="btn-cancel-budget">Batal</button>
+    </div>
+  </div>
+
+  <!-- Category Modal -->
+  <div class="modal-overlay" id="modal-category">
+    <div class="modal-sheet modal-small">
+      <div class="modal-handle"></div>
+      <h2 class="modal-title">Tambah Kategori</h2>
+      <div class="form-group">
+        <label>Tipe</label>
+        <div class="type-toggle">
+          <button class="toggle-btn active" data-type="expense" id="cat-toggle-expense">Pengeluaran</button>
+          <button class="toggle-btn" data-type="income" id="cat-toggle-income">Pemasukan</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Nama Kategori</label>
+        <input type="text" id="input-category-name" class="form-input" placeholder="Nama kategori">
+      </div>
+      <div class="form-group">
+        <label>Ikon</label>
+        <div class="emoji-picker" id="category-emoji-picker">
+          <button class="emoji-btn active" data-emoji="📦">📦</button>
+          <button class="emoji-btn" data-emoji="🍜">🍜</button>
+          <button class="emoji-btn" data-emoji="🚗">🚗</button>
+          <button class="emoji-btn" data-emoji="🛒">🛒</button>
+          <button class="emoji-btn" data-emoji="💡">💡</button>
+          <button class="emoji-btn" data-emoji="📱">📱</button>
+          <button class="emoji-btn" data-emoji="🏥">🏥</button>
+          <button class="emoji-btn" data-emoji="🎓">🎓</button>
+          <button class="emoji-btn" data-emoji="🎮">🎮</button>
+          <button class="emoji-btn" data-emoji="👕">👕</button>
+          <button class="emoji-btn" data-emoji="🏠">🏠</button>
+          <button class="emoji-btn" data-emoji="💝">💝</button>
+          <button class="emoji-btn" data-emoji="💰">💰</button>
+          <button class="emoji-btn" data-emoji="💼">💼</button>
+          <button class="emoji-btn" data-emoji="🎁">🎁</button>
+          <button class="emoji-btn" data-emoji="📈">📈</button>
+          <button class="emoji-btn" data-emoji="✈️">✈️</button>
+          <button class="emoji-btn" data-emoji="🐱">🐱</button>
+          <button class="emoji-btn" data-emoji="☕">☕</button>
+          <button class="emoji-btn" data-emoji="🎵">🎵</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Warna</label>
+        <div class="color-picker" id="category-color-picker">
+          <button class="color-btn active" data-color="#EF4444" style="background:#EF4444"></button>
+          <button class="color-btn" data-color="#F59E0B" style="background:#F59E0B"></button>
+          <button class="color-btn" data-color="#10B981" style="background:#10B981"></button>
+          <button class="color-btn" data-color="#3B82F6" style="background:#3B82F6"></button>
+          <button class="color-btn" data-color="#8B5CF6" style="background:#8B5CF6"></button>
+          <button class="color-btn" data-color="#EC4899" style="background:#EC4899"></button>
+          <button class="color-btn" data-color="#06B6D4" style="background:#06B6D4"></button>
+          <button class="color-btn" data-color="#84CC16" style="background:#84CC16"></button>
+        </div>
+      </div>
+      <button class="btn-primary" id="btn-save-category">Simpan</button>
+      <button class="btn-text btn-cancel" id="btn-cancel-category">Batal</button>
+    </div>
+  </div>
+
+  <!-- Confirmation Dialog -->
+  <div class="modal-overlay" id="modal-confirm">
+    <div class="modal-sheet modal-confirm">
+      <h2 class="modal-title" id="confirm-title">Konfirmasi</h2>
+      <p id="confirm-message">Apakah Anda yakin?</p>
+      <div class="confirm-buttons">
+        <button class="btn-text" id="btn-confirm-cancel">Batal</button>
+        <button class="btn-danger" id="btn-confirm-ok">Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <span id="toast-message"></span>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- App Scripts                                   -->
+  <!-- ============================================ -->
+  <script src="js/utils.js?v=26"></script>
+  <script src="js/db.js?v=26"></script>
+  <script src="js/dashboard.js?v=26"></script>
+  <script src="js/transaction.js?v=26"></script>
+  <script src="js/budget.js?v=26"></script>
+  <script src="js/report.js?v=26"></script>
+  <script src="js/wallet.js?v=26"></script>
+  <script src="js/category.js?v=26"></script>
+  <script src="js/app.js?v=26"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').then((reg) => {
+          console.log('ServiceWorker registered:', reg.scope);
+        }).catch((err) => {
+          console.log('ServiceWorker registration failed:', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
